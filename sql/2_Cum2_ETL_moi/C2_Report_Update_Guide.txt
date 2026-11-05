@@ -1,0 +1,32 @@
+GOI Y CAP NHAT BAO CAO 4.2.2-4.2.3 SAU KHI CHAY THANH CONG
+======================================================
+4.2.2: Mo ta Extract toan bo staging; Validate toan bo staging (bao gom
+ngoai pham vi); sau do chon khach ca nhan PersonID IS NOT NULL AND
+StoreID IS NULL, don Status=5, va cac ban ghi khong bi reject de nap vao DW.
+Nho nhan manh: logic Stage validation toan bo nguon khong dong nghia moi
+ban ghi ngoai pham vi deu la loi.
+
+Hai quy tac moi:
+  (1) l.UnitPrice=0 AND p.ListPrice>0 AND l.SpecialOfferID=1 (khong promotion).
+  (2) o.SubTotal<=0 va don co it nhat mot dong chi tiet.
+Can bieu dien dung ky hieu no-promotion cua CompanyX theo preflight.
+
+4.2.3: KHONG giu cau "khong phat sinh ban ghi bi tu choi" neu
+etl.RejectedRow co du lieu trong lan chay moi. Ghi ro rejected IsInScope=0
+la loi ngoai pham vi, khong bi nap Fact; StepLog.RejectedRows chi la loi
+trong pham vi.
+
+C2_03_Verify_and_Quality.sql co 44 phep kiem tra, KHONG tu dong bao dam
+44 PASS. Cap nhat Bang 4.3/4.4, Hinh 4.6/4.8/4.9 theo ACTUAL RESULTS
+sau khi chay, va tach kiem tra RFM moi (Cum 3) khoi 44 phep kiem tra nay.
+
+Anh chung minh can chup:
+  - RunLog=SUCCESS va StepLog so dong;
+  - log RejectedRow theo IsInScope va reason;
+  - danh sach 43677-43682 va IsInScope;
+  - ket qua PASS/FAIL tong, theo nhom, tung phep;
+  - datatable snapshot CU (chi de chung minh khong xoa).
+
+Qua trinh chay C2 khong goi etl.usp_RebuildSnapshots. Do do neu cac don
+trong pham vi bi loai them, bang CustomerSnapshot cu co the khong khop Facts
+moi: Cum 3 co trach nhiem tinh lai du lieu va kiem tra.
